@@ -32,26 +32,28 @@ api.interceptors.response.use(
 
 // API endpoints
 export const locationApi = {
-  update: (data: { busId: string; lat: number; lng: number }) =>
-    api.post("/location/update", data),
-  getAll: () => api.get("/location/all"),
+  update: (data: { busId: string; lat: number; lng: number }, timeout?: number) =>
+    api.post("/location/update", data, timeout ? { timeout } : {}),
+  getAll: (timeout?: number) => api.get("/location/all", timeout ? { timeout } : {}),
 };
 
 export const attendanceApi = {
-  record: (data: { studentId: string; busId: string; status: string }) =>
-    api.post("/attendance/record", data),
-  getHistory: (params?: { date?: string; busId?: string }) =>
-    api.get("/attendance/history", { params }),
+  record: (data: { studentId: string; busId: string; status: string }, timeout?: number) =>
+    api.post("/attendance/record", data, timeout ? { timeout } : {}),
+  getHistory: (params?: { date?: string; busId?: string }, timeout?: number) =>
+    api.get("/attendance/history", { params, ...(timeout ? { timeout } : {}) }),
 };
 
 export const notificationApi = {
-  getAll: () => api.get("/notifications"),
+  getAll: (timeout?: number) => api.get("/notifications", timeout ? { timeout } : {}),
   markRead: (id: string) => api.put(`/notifications/${id}/read`),
 };
 
 export const routeApi = {
-  optimize: (routeId: string) => api.post(`/optimizer/route/${routeId}`),
-  getAll: () => api.get("/routes"),
+  // Route optimization can be slow — allow a longer timeout per call
+  optimize: (routeId: string, timeout?: number) =>
+    api.post(`/optimizer/route/${routeId}`, {}, timeout ? { timeout } : {}),
+  getAll: (timeout?: number) => api.get("/routes", timeout ? { timeout } : {}),
 };
 
 export default api;

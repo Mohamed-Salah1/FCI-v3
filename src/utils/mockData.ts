@@ -74,7 +74,7 @@ export const mockAvailableRoutes: AvailableRoute[] = [
     routeName: "Route Alpha",
     busNumber: "SB-101",
     driverName: "Ahmad Khaled",
-    stops: ["Depot", "Green Valley", "Elm Street", "City Center", "School Campus"],
+    stops: ["University Depot", "Al Geish St North", "Al Ustad St", "Al Mahkama St", "KFS University"],
     estimatedPickupTime: "07:15 AM",
     status: "active",
     eta: 8,
@@ -86,7 +86,7 @@ export const mockAvailableRoutes: AvailableRoute[] = [
     routeName: "Route Beta",
     busNumber: "SB-102",
     driverName: "Sara Mostafa",
-    stops: ["Depot", "Marina Bay", "University Gate", "Tech Park", "School Campus"],
+    stops: ["University Depot", "Al Geish St North", "Al Geish St Central", "University Hospital", "KFS University"],
     estimatedPickupTime: "07:25 AM",
     status: "active",
     eta: 3,
@@ -98,7 +98,7 @@ export const mockAvailableRoutes: AvailableRoute[] = [
     routeName: "Route Gamma",
     busNumber: "SB-103",
     driverName: "Omar Ramadan",
-    stops: ["Depot", "Palm Street", "Lake View", "Sports Complex", "School Campus"],
+    stops: ["University Depot", "West District", "Gen. Gamal Hamad St", "Al Mahkama St", "KFS University"],
     estimatedPickupTime: "07:10 AM",
     status: "inactive",
     eta: 0,
@@ -110,7 +110,7 @@ export const mockAvailableRoutes: AvailableRoute[] = [
     routeName: "Route Delta",
     busNumber: "SB-104",
     driverName: "Lina Hassan",
-    stops: ["Depot", "Mall Junction", "Hospital Road", "Central Park", "School Campus"],
+    stops: ["University Depot", "Al Geish St Central", "University Hospital", "Sakha Rd", "KFS University"],
     estimatedPickupTime: "07:30 AM",
     status: "active",
     eta: 12,
@@ -121,10 +121,10 @@ export const mockAvailableRoutes: AvailableRoute[] = [
 
 // ===== BUS LOCATIONS =====
 export const mockBusLocations: BusLocation[] = [
-  { busId: "bus-1", busNumber: "SB-101", lat: 31.1205, lng: 30.9702, destinationLat: 31.097041, destinationLng: 30.946548, speed: 35, heading: 45, occupancy: 28, capacity: 40, status: "on-route", routeName: "Route Alpha", nextStop: "City Center", eta: 8, driverName: "Ahmad K.", lastUpdated: new Date().toISOString() },
-  { busId: "bus-2", busNumber: "SB-102", lat: 31.0752, lng: 30.9154, destinationLat: 31.1100, destinationLng: 30.9500, speed: 20, heading: 120, occupancy: 35, capacity: 40, status: "approaching", routeName: "Route Beta", nextStop: "University Gate", eta: 3, driverName: "Sara M.", lastUpdated: new Date().toISOString() },
-  { busId: "bus-3", busNumber: "SB-103", lat: 31.1358, lng: 30.9056, destinationLat: 31.0800, destinationLng: 30.9300, speed: 0, heading: 0, occupancy: 0, capacity: 40, status: "idle", routeName: "Route Gamma", nextStop: "Depot", eta: 0, driverName: "Omar R.", lastUpdated: new Date().toISOString() },
-  { busId: "bus-4", busNumber: "SB-104", lat: 31.0603, lng: 30.9851, destinationLat: 31.1000, destinationLng: 30.9100, speed: 45, heading: 270, occupancy: 22, capacity: 40, status: "on-route", routeName: "Route Delta", nextStop: "Mall Junction", eta: 12, driverName: "Lina H.", lastUpdated: new Date().toISOString() },
+  { busId: "bus-1", busNumber: "SB-101", lat: 31.1095, lng: 30.9450, destinationLat: 31.0994, destinationLng: 30.9475, speed: 35, heading: 45, occupancy: 28, capacity: 40, status: "on-route", routeName: "Route Alpha", nextStop: "Al Geish St Central", eta: 8, driverName: "Ahmad K.", lastUpdated: new Date().toISOString() },
+  { busId: "bus-2", busNumber: "SB-102", lat: 31.1090, lng: 30.9408, destinationLat: 31.1100, destinationLng: 30.9500, speed: 20, heading: 120, occupancy: 35, capacity: 40, status: "approaching", routeName: "Route Beta", nextStop: "University Gate", eta: 3, driverName: "Sara M.", lastUpdated: new Date().toISOString() },
+  { busId: "bus-3", busNumber: "SB-103", lat: 31.1060, lng: 30.9350, destinationLat: 31.0994, destinationLng: 30.9475, speed: 0, heading: 0, occupancy: 0, capacity: 40, status: "idle", routeName: "Route Gamma", nextStop: "Depot", eta: 0, driverName: "Omar R.", lastUpdated: new Date().toISOString() },
+  { busId: "bus-4", busNumber: "SB-104", lat: 31.1000, lng: 30.9475, destinationLat: 31.0994, destinationLng: 30.9475, speed: 45, heading: 270, occupancy: 22, capacity: 40, status: "on-route", routeName: "Route Delta", nextStop: "Al Mahkama St", eta: 12, driverName: "Lina H.", lastUpdated: new Date().toISOString() },
 ];
 
 // ===== ATTENDANCE =====
@@ -148,22 +148,20 @@ export const mockNotifications: Notification[] = [
   { id: "5", title: "SB-103 Maintenance Due", message: "Bus SB-103 is due for scheduled maintenance.", type: "error", timestamp: new Date(Date.now() - 1800000).toISOString(), read: false },
 ];
 
-// ===== ROUTE STOPS =====
+// ===== ROUTE STOPS (Student Pickup Points in Kafr El Sheikh — No Fixed Stations) =====
 export const mockRouteStops: RouteStop[] = [
-  { id: "s1", name: "Depot", lat: 33.88, lng: 35.49, eta: "06:45", status: "completed", studentsCount: 0 },
-  { id: "s2", name: "Green Valley", lat: 33.883, lng: 35.492, eta: "07:00", status: "completed", studentsCount: 8 },
-  { id: "s3", name: "Elm Street", lat: 33.886, lng: 35.495, eta: "07:10", status: "completed", studentsCount: 5 },
-  { id: "s4", name: "City Center", lat: 33.889, lng: 35.498, eta: "07:20", status: "current", studentsCount: 10 },
-  { id: "s5", name: "University Gate", lat: 33.892, lng: 35.501, eta: "07:35", status: "upcoming", studentsCount: 7 },
-  { id: "s6", name: "School Campus", lat: 33.895, lng: 35.505, eta: "07:50", status: "upcoming", studentsCount: 0 },
+  { id: "s1", name: "University Depot",      lat: 31.0994, lng: 30.9475, eta: "06:45", status: "completed", studentsCount: 0 },
+  { id: "s2", name: "Al Geish St North",      lat: 31.1148, lng: 30.9408, eta: "07:05", status: "completed", studentsCount: 2 },
+  { id: "s3", name: "Al Geish St Central",    lat: 31.1060, lng: 30.9408, eta: "07:18", status: "current",   studentsCount: 3 },
+  { id: "s4", name: "Al Mahkama St Junction", lat: 31.1007, lng: 30.9408, eta: "07:28", status: "upcoming",  studentsCount: 1 },
+  { id: "s5", name: "KFS University Gate",    lat: 31.0994, lng: 30.9475, eta: "07:40", status: "upcoming",  studentsCount: 0 },
 ];
 
-// ===== STUDENT PICKUPS =====
+// ===== STUDENT PICKUPS (Pickup Points based on student home locations) =====
 export const mockStudentPickups: StudentPickup[] = [
-  { id: "p1", name: "Maya Johnson", stop: "City Center", status: "waiting", avatar: "https://i.pravatar.cc/150?img=48", phone: "01011112222" },
-  { id: "p2", name: "Ali Hassan", stop: "City Center", status: "waiting", avatar: "https://i.pravatar.cc/150?img=68", phone: "01022223333" },
-  { id: "p3", name: "Noah Smith", stop: "City Center", status: "boarded", avatar: "https://i.pravatar.cc/150?img=59", phone: "01033334444" },
-  { id: "p4", name: "Lara Khalil", stop: "University Gate", status: "waiting", avatar: "https://i.pravatar.cc/150?img=25", phone: "01044445555" },
-  { id: "p5", name: "Zain Abou", stop: "University Gate", status: "waiting", avatar: "https://i.pravatar.cc/150?img=15", phone: "01055556666" },
-  { id: "p6", name: "Sophie Lee", stop: "University Gate", status: "absent", avatar: "https://i.pravatar.cc/150?img=20", phone: "01066667777" },
+  { id: "p1", name: "Maya Johnson", stop: "Al Ustad St North", status: "boarded", avatar: "https://i.pravatar.cc/150?img=48", phone: "01011112222" },
+  { id: "p2", name: "Ali Hassan", stop: "Al Geish St - City Center", status: "waiting", avatar: "https://i.pravatar.cc/150?img=68", phone: "01022223333" },
+  { id: "p3", name: "Noah Smith", stop: "West of Al Geish St", status: "waiting", avatar: "https://i.pravatar.cc/150?img=59", phone: "01033334444" },
+  { id: "p4", name: "Emma Davis", stop: "Al Geish St North", status: "waiting", avatar: "https://i.pravatar.cc/150?img=45", phone: "01044445555" },
+  { id: "p5", name: "Lara Khalil", stop: "Gen. Gamal Hamad St", status: "absent", avatar: "https://i.pravatar.cc/150?img=25", phone: "01055556666" },
 ];

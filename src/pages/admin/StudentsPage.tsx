@@ -17,12 +17,12 @@ const StudentsPage = () => {
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [editingStudent, setEditingStudent] = useState<Student | null>(null);
   const [students, setStudents] = useState<Student[]>([
-    { id: "s1", name: "Maya Johnson", grade: "Grade 10", bus: "SB-101", stop: "City Center", status: "active", email: "student@bustrack.io", phone: "01011112222" },
-    { id: "s2", name: "Ali Hassan", grade: "Grade 9", bus: "SB-101", stop: "City Center", status: "active", email: "ali.h@bustrack.io", phone: "01022223333" },
-    { id: "s3", name: "Emma Davis", grade: "Grade 11", bus: "SB-102", stop: "University Gate", status: "active", email: "emma.d@bustrack.io", phone: "01033334444" },
-    { id: "s4", name: "Noah Smith", grade: "Grade 8", bus: "SB-102", stop: "University Gate", status: "active", email: "noah.s@bustrack.io", phone: "01044445555" },
-    { id: "s5", name: "Lara Khalil", grade: "Grade 10", bus: "SB-103", stop: "Elm Street", status: "active", email: "lara.k@bustrack.io", phone: "01055556666" },
-    { id: "s6", name: "Zain Abou", grade: "Grade 11", bus: "SB-104", stop: "Green Valley", status: "active", email: "zain.a@bustrack.io", phone: "01066667777" },
+    { id: "s1", name: "Maya Johnson", grade: "Grade 10", bus: "SB-101", stop: "Al Ustad St North", status: "active", email: "student@bustrack.io", phone: "01011112222" },
+    { id: "s2", name: "Ali Hassan", grade: "Grade 9", bus: "SB-102", stop: "Al Geish St - City Center", status: "active", email: "ali.h@bustrack.io", phone: "01022223333" },
+    { id: "s3", name: "Emma Davis", grade: "Grade 11", bus: "SB-102", stop: "Al Geish St North", status: "active", email: "emma.d@bustrack.io", phone: "01033334444" },
+    { id: "s4", name: "Noah Smith", grade: "Grade 8", bus: "SB-103", stop: "West of Al Geish St", status: "active", email: "noah.s@bustrack.io", phone: "01044445555" },
+    { id: "s5", name: "Lara Khalil", grade: "Grade 10", bus: "SB-103", stop: "Gen. Gamal Hamad St", status: "active", email: "lara.k@bustrack.io", phone: "01055556666" },
+    { id: "s6", name: "Zain Abou", grade: "Grade 11", bus: "SB-104", stop: "Al Mahkama St", status: "active", email: "zain.a@bustrack.io", phone: "01066667777" },
   ]);
 
   const handleDelete = (id: string) => { setStudents(students.filter(s => s.id !== id)); toast.success("Deleted"); };

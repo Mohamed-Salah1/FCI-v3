@@ -25,6 +25,7 @@ const DriverHomeTab = ({ tripStatus, seconds, boarded, waiting, absent }: Props)
   const totalStops = mockRouteStops.length;
   const completedStops = mockRouteStops.filter((s) => s.status === "completed").length;
   const progressPercentage = (completedStops / totalStops) * 100;
+  const totalStudents = mockRouteStops.reduce((sum, s) => sum + s.studentsCount, 0);
 
   return (
     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6 pb-8">
@@ -111,7 +112,7 @@ const DriverHomeTab = ({ tripStatus, seconds, boarded, waiting, absent }: Props)
       {/* Current & Next Stop Section */}
       <div className="grid grid-cols-2 gap-4">
         <div className="glass-card rounded-[2rem] p-6 border border-border/50 bg-primary/5">
-          <p className="text-[10px] uppercase font-black text-primary tracking-widest mb-2">Current Stop</p>
+          <p className="text-[10px] uppercase font-black text-primary tracking-widest mb-2">Current Pickup</p>
           <div className="flex items-center gap-2 mb-1">
             <MapPin className="h-4 w-4 text-primary" />
             <h3 className="font-bold text-sm truncate">{currentStop?.name || "End of Route"}</h3>
@@ -119,7 +120,7 @@ const DriverHomeTab = ({ tripStatus, seconds, boarded, waiting, absent }: Props)
           <p className="text-[10px] text-muted-foreground font-medium">Arrived at {currentStop?.eta}</p>
         </div>
         <div className="glass-card rounded-[2rem] p-6 border border-border/50">
-          <p className="text-[10px] uppercase font-black text-muted-foreground tracking-widest mb-2">Up Next</p>
+          <p className="text-[10px] uppercase font-black text-muted-foreground tracking-widest mb-2">Next Pickup</p>
           <div className="flex items-center gap-2 mb-1">
             <Navigation className="h-4 w-4 text-muted-foreground" />
             <h3 className="font-bold text-sm truncate">{nextStop?.name || "School"}</h3>
@@ -128,12 +129,12 @@ const DriverHomeTab = ({ tripStatus, seconds, boarded, waiting, absent }: Props)
         </div>
       </div>
 
-      {/* Route Timeline - Premium UI */}
+      {/* Pickup Timeline - Premium UI */}
       <div className="glass-card rounded-[2.5rem] p-8 space-y-6 border border-border/50">
         <div className="flex items-center justify-between">
-          <h2 className="text-sm font-black uppercase tracking-widest">Route Timeline</h2>
+          <h2 className="text-sm font-black uppercase tracking-widest">Pickup Timeline</h2>
           <Badge variant="secondary" className="rounded-full text-[9px] font-bold">
-            {totalStops} Stops Total
+            {totalStops} Pickup Points
           </Badge>
         </div>
 

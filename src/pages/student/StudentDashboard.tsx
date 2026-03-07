@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
-import { Bus, MapPin, User, History, Sun, Moon, Home } from "lucide-react";
+import { useEffect, useState, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Bus, MapPin, User, History, Sun, Moon, Home, Clock, Zap, Users, RefreshCw, ChevronRight } from "lucide-react";
 import { useAppStore } from "@/store/useAppStore";
-import { mockBusLocations, mockAttendance, mockNotifications, mockStudents } from "@/utils/mockData";
-import MapView from "@/components/map/MapView";
+import { mockAttendance, mockNotifications, mockStudents } from "@/utils/mockData";
+import { MOCK_BUSES, interpolateRoute, calcDistance } from "@/utils/mapData";
+import StudentMap from "@/components/map/StudentMap";
 import NotificationPanel from "@/components/notifications/NotificationPanel";
 import { Badge } from "@/components/ui/badge";
 import wsService from "@/services/websocket";
@@ -11,22 +12,23 @@ import type { BusLocation, Notification } from "@/types";
 import StudentHomeTab from "@/pages/student/StudentHomeTab";
 import StudentProfileTab from "@/pages/student/StudentProfileTab";
 
-const statusStyles: Record<string, string> = {
-  "on-route": "bg-primary/10 text-primary border-primary/30",
-  approaching: "bg-warning/10 text-warning border-warning/30",
-  arrived: "bg-success/10 text-success border-success/30",
-  idle: "bg-muted text-muted-foreground border-border",
-  delayed: "bg-destructive/10 text-destructive border-destructive/30",
-};
+export interface StudentLocation {
+  lat: number;
+  lng: number;
+  locationName: string;
+  assignedBusId: string;
+}
 
 const StudentDashboard = () => {
-  const { busLocations, setBusLocations, updateBusLocation, addNotification, notifications, isDark, toggleTheme, logout, user } = useAppStore();
-  const [activeTab, setActiveTab] = useState<"home" | "map" | "history" | "profile">("home");
+  const { updateBusLocation, addNotification, notifications, isDark, toggleTheme, logout, user } = useAppStore();
+  const [activeTab, setActiveTab] = useState<"home" | "map" | "history" | "profile">("map");
+  const [studentLocation, setStudentLocation] = useState<StudentLocation | null>(null);
+  const [busProgress, setBusProgress] = useState(0.08);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const studentProfile = mockStudents.find((s) => s.email === user?.email) || mockStudents[0];
 
   useEffect(() => {
-    setBusLocations(mockBusLocations);
     if (notifications.length === 0) mockNotifications.forEach((n) => addNotification(n));
     wsService.connect();
     const handler = (data: BusLocation | Notification) => {
@@ -34,15 +36,44 @@ const StudentDashboard = () => {
     };
     wsService.subscribe("bus-location", handler);
     return () => wsService.unsubscribe("bus-location", handler);
-  }, [notifications.length, setBusLocations, addNotification, updateBusLocation]);
+  }, []);
 
-  const activeBuses = busLocations.filter((b) => b.status !== "idle");
-  const firstActiveBus = activeBuses[0];
+  // Animate bus progress after location set
+  useEffect(() => {
+    clearInterval(intervalRef.current!);
+    if (!studentLocation) return;
+    setBusProgress(0.08);
+    intervalRef.current = setInterval(() => {
+      setBusProgress((p) => {
+        if (p >= 0.95) { clearInterval(intervalRef.current!); return 0.95; }
+        return p + 0.0012;
+      });
+    }, 600);
+    return () => clearInterval(intervalRef.current!);
+  }, [studentLocation?.assignedBusId]);
+
+  const handleLocationSet = (loc: StudentLocation) => {
+    setStudentLocation(loc);
+    setActiveTab("home");
+  };
+
+  const handleClearLocation = () => {
+    setStudentLocation(null);
+    setBusProgress(0.08);
+    setActiveTab("map");
+  };
+
+  const assignedBus = studentLocation ? MOCK_BUSES.find((b) => b.id === studentLocation.assignedBusId) : null;
+  const busPos = assignedBus ? interpolateRoute(assignedBus.route, busProgress) : null;
+  const etaMinutes = assignedBus && busPos && studentLocation
+    ? Math.max(1, Math.round((calcDistance(busPos[0], busPos[1], studentLocation.lat, studentLocation.lng) / assignedBus.speed) * 60))
+    : null;
 
   return (
     <div className="h-screen flex flex-col bg-background overflow-hidden">
-      {/* Header */}
-      <header className="glass-card-strong border-b border-border/50 px-4 py-3 flex items-center justify-between sticky top-0 z-20">
+
+      {/* ── Header ── */}
+      <header className="glass-card-strong border-b border-border/50 px-4 py-3 flex items-center justify-between flex-shrink-0 z-20">
         <div className="flex items-center gap-2">
           <div className="h-8 w-8 rounded-lg gradient-primary flex items-center justify-center">
             <Bus className="h-4 w-4 text-primary-foreground" />
@@ -58,64 +89,141 @@ const StudentDashboard = () => {
         </div>
       </header>
 
-      {/* Active bus status bar (only on map tab) */}
-      {activeTab === "map" && firstActiveBus && (
-        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className={`mx-4 mt-3 rounded-xl p-4 border ${statusStyles[firstActiveBus.status]}`}>
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-xs uppercase tracking-wide opacity-70">Active Bus</p>
-              <p className="text-xl font-bold">{firstActiveBus.busNumber}</p>
-            </div>
-            <div className="text-right">
-              <p className="text-xs uppercase tracking-wide opacity-70">ETA</p>
-              <p className="text-2xl font-bold">{firstActiveBus.eta}<span className="text-sm ml-1">min</span></p>
-            </div>
-          </div>
-          <div className="flex items-center gap-2 mt-2 text-xs">
-            <MapPin className="h-3 w-3" />
-            <span>Next: {firstActiveBus.nextStop}</span>
-            <span className="mx-1">•</span>
-            <span className="capitalize">{firstActiveBus.status.replace("-", " ")}</span>
-          </div>
-        </motion.div>
-      )}
+      {/* ── Assigned Bus Bar (only on map tab, after location set) ── */}
+      <AnimatePresence>
+        {activeTab === "map" && studentLocation && assignedBus && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            className="flex-shrink-0 overflow-hidden"
+          >
+            <div
+              className="mx-3 my-2 rounded-xl px-4 py-3 flex items-center gap-3 border"
+              style={{
+                borderColor: assignedBus.colorHex + "50",
+                background: `linear-gradient(90deg, ${assignedBus.colorHex}18 0%, transparent 100%)`,
+              }}
+            >
+              {/* Color dot + bus number */}
+              <div
+                className="w-8 h-8 rounded-full flex items-center justify-center text-sm flex-shrink-0 shadow border-2 border-white"
+                style={{ background: assignedBus.colorHex }}
+              >
+                🚌
+              </div>
 
-      {/* Content */}
-      <div className="flex-1 p-4 overflow-y-auto">
-        {activeTab === "home" && <StudentHomeTab profile={studentProfile} />}
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-1.5">
+                  <span className="font-black text-sm">{assignedBus.number}</span>
+                  <Badge
+                    className="text-[9px] text-white border-none h-4 px-1.5"
+                    style={{ background: assignedBus.colorHex }}
+                  >
+                    Active
+                  </Badge>
+                </div>
+                <div className="flex items-center gap-2.5 mt-0.5">
+                  <span className="flex items-center gap-1 text-[11px] text-muted-foreground">
+                    <Clock className="h-2.5 w-2.5" /> {etaMinutes ?? "--"} min ETA
+                  </span>
+                  <span className="text-[11px] text-muted-foreground truncate max-w-[110px]">
+                    📍 {studentLocation.locationName}
+                  </span>
+                </div>
+              </div>
 
+              {/* Quick stats */}
+              <div className="flex gap-3 flex-shrink-0 text-center">
+                <div>
+                  <p className="text-[11px] font-black">{assignedBus.speed}</p>
+                  <p className="text-[9px] text-muted-foreground">km/h</p>
+                </div>
+                <div>
+                  <p className="text-[11px] font-black">{assignedBus.capacity}</p>
+                  <p className="text-[9px] text-muted-foreground">cap</p>
+                </div>
+              </div>
+
+              {/* Change location */}
+              <button
+                onClick={handleClearLocation}
+                className="w-7 h-7 rounded-full border border-border bg-background flex items-center justify-center hover:bg-secondary transition flex-shrink-0 ml-1"
+                title="Change pickup location"
+              >
+                <RefreshCw className="h-3 w-3 text-muted-foreground" />
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* ── Content ── */}
+      <div className={`flex-1 overflow-hidden ${activeTab === "map" ? "" : "overflow-y-auto"}`}>
+
+        {/* Map tab - full height, no padding */}
         {activeTab === "map" && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="h-[calc(100vh-278px)]">
-            <MapView buses={busLocations} fullScreen />
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="h-full p-3 pb-0"
+          >
+            <StudentMap
+              fullScreen
+              studentLocation={studentLocation}
+              onLocationSet={handleLocationSet}
+              onClearLocation={handleClearLocation}
+            />
+          </motion.div>
+        )}
+
+        {activeTab === "home" && (
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="h-full overflow-y-auto p-4"
+          >
+            <StudentHomeTab
+              profile={studentProfile}
+              studentLocation={studentLocation}
+              busProgress={busProgress}
+              onGoToMap={() => setActiveTab("map")}
+            />
           </motion.div>
         )}
 
         {activeTab === "history" && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-3">
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="h-full overflow-y-auto p-4 space-y-3">
             <h2 className="font-semibold">Attendance History</h2>
             {mockAttendance.filter((a) => a.studentName === studentProfile.name).length === 0 ? (
               <p className="text-sm text-muted-foreground text-center py-8">No attendance records found</p>
             ) : (
-              mockAttendance.filter((a) => a.studentName === studentProfile.name).map((record) => (
-                <div key={record.id} className="glass-card rounded-xl p-4 flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium">{record.date}</p>
-                    <p className="text-xs text-muted-foreground">Bus {record.busNumber} • {record.boardingTime}</p>
+              mockAttendance
+                .filter((a) => a.studentName === studentProfile.name)
+                .map((record) => (
+                  <div key={record.id} className="glass-card rounded-xl p-4 flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium">{record.date}</p>
+                      <p className="text-xs text-muted-foreground">Bus {record.busNumber} • {record.boardingTime}</p>
+                    </div>
+                    <Badge variant={record.status === "present" ? "default" : record.status === "late" ? "secondary" : "destructive"}>
+                      {record.status}
+                    </Badge>
                   </div>
-                  <Badge variant={record.status === "present" ? "default" : record.status === "late" ? "secondary" : "destructive"}>{record.status}</Badge>
-                </div>
-              ))
+                ))
             )}
           </motion.div>
         )}
 
         {activeTab === "profile" && (
-          <StudentProfileTab profile={studentProfile} />
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="h-full overflow-y-auto p-4">
+            <StudentProfileTab profile={studentProfile} />
+          </motion.div>
         )}
       </div>
 
-      {/* Bottom Navigation */}
-      <nav className="glass-card-strong border-t border-border/50 flex">
+      {/* ── Bottom Navigation ── */}
+      <nav className="glass-card-strong border-t border-border/50 flex flex-shrink-0">
         {[
           { id: "home" as const, icon: Home, label: "Home" },
           { id: "map" as const, icon: MapPin, label: "Map" },

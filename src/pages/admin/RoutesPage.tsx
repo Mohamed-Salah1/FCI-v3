@@ -16,9 +16,9 @@ const RoutesPage = () => {
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [editingRoute, setEditingRoute] = useState<Route | null>(null);
   const [routes, setRoutes] = useState<Route[]>([
-    { id: "r1", name: "Route Alpha", assignedBus: "SB-101", stops: ["City Center", "Central Park", "High School"], status: "active" },
-    { id: "r2", name: "Route Beta", assignedBus: "SB-102", stops: ["University Gate", "Library", "Dorms"], status: "active" },
-    { id: "r3", name: "Route Gamma", assignedBus: "SB-103", stops: ["Elm Street", "Maple Avenue", "Oak Road"], status: "inactive" },
+    { id: "r1", name: "Route Alpha", assignedBus: "SB-101", stops: ["Al Ustad St", "Al Geish St North", "University Gate"], status: "active" },
+    { id: "r2", name: "Route Beta", assignedBus: "SB-102", stops: ["Al Geish St North", "Al Geish St Central", "University Gate"], status: "active" },
+    { id: "r3", name: "Route Gamma", assignedBus: "SB-103", stops: ["West District", "Gen. Gamal Hamad St", "University Gate"], status: "inactive" },
   ]);
 
   const handleDelete = (id: string) => { setRoutes(routes.filter(r => r.id !== id)); toast.success("Route deleted"); };

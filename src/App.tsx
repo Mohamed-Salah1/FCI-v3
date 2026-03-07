@@ -39,19 +39,12 @@ const AppRoutes = () => {
 const App = () => {
   const { isDark } = useAppStore();
 
+  // Sync dark class with store state — single source of truth
   useEffect(() => {
     document.documentElement.classList.toggle("dark", isDark);
   }, [isDark]);
-
-  useEffect(() => {
-    const stored = localStorage.getItem("user");
-    if (stored) {
-      try {
-        const user = JSON.parse(stored);
-        useAppStore.getState().login(user, localStorage.getItem("token") || "");
-      } catch { /* ignore */ }
-    }
-  }, []);
+  // NOTE: Auth state is fully initialized by the store from localStorage at
+  // module load time (token / isAuthenticated). No duplicate effect needed.
 
   return (
     <QueryClientProvider client={queryClient}>

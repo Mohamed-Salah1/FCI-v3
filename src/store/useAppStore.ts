@@ -35,13 +35,8 @@ export const useAppStore = create<AppState>((set, get) => ({
     set({ user: null, token: null, isAuthenticated: false });
   },
   isDark: true,
-  toggleTheme: () => {
-    set((state) => {
-      const next = !state.isDark;
-      document.documentElement.classList.toggle("dark", next);
-      return { isDark: next };
-    });
-  },
+  // DOM sync is handled by a useEffect in App.tsx — store stays pure
+  toggleTheme: () => set((state) => ({ isDark: !state.isDark })),
   busLocations: [],
   setBusLocations: (locations) => set({ busLocations: locations }),
   updateBusLocation: (location) =>

@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Bus, Users, Map, User, CheckCircle, Sun, Moon } from "lucide-react";
 import { useAppStore } from "@/store/useAppStore";
-import { mockRouteStops, mockStudentPickups, mockBusLocations, mockDrivers } from "@/utils/mockData";
-import MapView from "@/components/map/MapView";
+import { mockRouteStops, mockStudentPickups, mockDrivers } from "@/utils/mockData";
+import DriverMap from "@/components/map/DriverMap";
 import NotificationPanel from "@/components/notifications/NotificationPanel";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -17,15 +17,13 @@ import DriverBottomNav from "@/pages/driver/DriverBottomNav";
 type TabType = "Home" | "students" | "map" | "profile";
 
 const DriverDashboard = () => {
-  const { setBusLocations, user } = useAppStore();
+  const { user } = useAppStore();
   const [activeTab, setActiveTab] = useState<TabType>("Home");
   const [pickups, setPickups] = useState<StudentPickup[]>(mockStudentPickups);
   const [tripStatus, setTripStatus] = useState<"idle" | "running" | "paused" | "ended">("idle");
   const [seconds, setSeconds] = useState(0);
 
   const driverProfile = mockDrivers.find((d) => d.email === user?.email) || mockDrivers[0];
-
-  useEffect(() => { setBusLocations(mockBusLocations); }, [setBusLocations]);
 
   useEffect(() => {
     let interval: ReturnType<typeof setInterval> | null = null;
@@ -52,7 +50,7 @@ const DriverDashboard = () => {
         )}
         {activeTab === "map" && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="h-[calc(100vh-170px)]">
-            <MapView buses={mockBusLocations} fullScreen />
+            <DriverMap busId={driverProfile.busNumber === "SB-101" ? "bus-1" : driverProfile.busNumber === "SB-102" ? "bus-2" : "bus-3"} fullScreen />
           </motion.div>
         )}
         {activeTab === "profile" && <DriverProfileTab profile={driverProfile} />}
