@@ -128,7 +128,11 @@ const AdminMap = ({ className = "", fullScreen = false }: AdminMapProps) => {
   ];
 
   return (
-    <div className={`relative overflow-hidden rounded-xl ${fullScreen ? "h-full" : "h-[500px]"} ${className}`}>
+    <div
+  className={`relative z-0 overflow-hidden rounded-xl ${
+    fullScreen ? "h-full" : "h-[500px]"
+  } ${className}`}
+>
       {routesLoading && (
         <div className="absolute top-3 left-1/2 -translate-x-1/2 z-[1000] flex items-center gap-2 bg-background/90 backdrop-blur-sm border border-border/60 rounded-full px-4 py-1.5 shadow-lg text-xs font-semibold text-muted-foreground">
           <span className="h-2 w-2 rounded-full bg-primary animate-pulse inline-block" />

@@ -139,7 +139,7 @@ const StudentMap = ({ className = "", fullScreen = false, studentLocation, onLoc
     <div className={`flex flex-col ${fullScreen ? "h-full" : "h-[500px]"} ${className}`}>
 
       {/* ── Map Container (stable, no re-mount) ── */}
-      <div className="relative flex-1 rounded-2xl overflow-hidden border border-border/40 shadow-md">
+      <div className="relative z-0 flex-1 rounded-2xl overflow-hidden border border-border/40 shadow-md">
         <MapContainer
           center={[31.1070, 30.9440]}
           zoom={14}
