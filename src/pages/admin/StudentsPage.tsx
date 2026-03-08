@@ -13,7 +13,10 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { StudentForm } from "@/components/forms/StudentForm";
 import { toast } from "sonner";
 
-const StudentsPage = () => {
+
+interface Props { asTab?: boolean }
+
+const StudentsPage = ({ asTab }: Props) => {
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [editingStudent, setEditingStudent] = useState<Student | null>(null);
   const [students, setStudents] = useState<Student[]>([
@@ -39,8 +42,8 @@ const StudentsPage = () => {
     )},
   ];
 
-  return (
-    <AppLayout title="Student Directory">
+  const inner = (
+    <>
       <div className="space-y-6">
         <div className="flex justify-between items-center">
           <h2 className="text-2xl font-bold flex items-center gap-2"><Users className="h-6 w-6 text-primary" />Students</h2>
@@ -52,8 +55,10 @@ const StudentsPage = () => {
       </div>
       <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}><DialogContent className="max-w-2xl"><DialogHeader><DialogTitle>Add Student</DialogTitle></DialogHeader><StudentForm onSubmit={(data) => { setStudents([{ ...data, id: `s${students.length+1}`, bus: data.route, stop: data.pickupPoint } as Student, ...students]); setIsAddOpen(false); toast.success("Added"); }} onCancel={() => setIsAddOpen(false)} /></DialogContent></Dialog>
       <Dialog open={!!editingStudent} onOpenChange={(o) => !o && setEditingStudent(null)}><DialogContent className="max-w-2xl"><DialogHeader><DialogTitle>Edit Student</DialogTitle></DialogHeader>{editingStudent && <StudentForm initialData={editingStudent} onSubmit={(data) => { setStudents(students.map(s => s.id === editingStudent.id ? { ...s, ...data, bus: data.route, stop: data.pickupPoint } : s)); setEditingStudent(null); toast.success("Updated"); }} onCancel={() => setEditingStudent(null)} />}</DialogContent></Dialog>
-    </AppLayout>
+    </>
   );
+  if (asTab) return inner;
+  return <AppLayout title="Student Directory">{inner}</AppLayout>;
 };
 
 export default StudentsPage;

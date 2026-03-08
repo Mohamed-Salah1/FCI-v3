@@ -14,7 +14,10 @@ import { DriverForm } from "@/components/forms/DriverForm";
 import { toast } from "sonner";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
-const DriversPage = () => {
+
+interface Props { asTab?: boolean }
+
+const DriversPage = ({ asTab }: Props) => {
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [editingDriver, setEditingDriver] = useState<Driver | null>(null);
   const [viewingDriver, setViewingDriver] = useState<Driver | null>(null);
@@ -48,8 +51,8 @@ const DriversPage = () => {
     )},
   ];
 
-  return (
-    <AppLayout title="Driver Management">
+  const inner = (
+    <>
       <div className="space-y-6">
         <div className="flex justify-between items-center">
           <h2 className="text-2xl font-bold flex items-center gap-2"><SteeringWheel className="h-6 w-6 text-primary" />Drivers</h2>
@@ -72,8 +75,10 @@ const DriversPage = () => {
           <Button className="w-full" onClick={() => { setEditingDriver(viewingDriver); setViewingDriver(null); }}><Edit className="h-4 w-4 mr-2" /> Edit Profile</Button>
         </div>
       )}</SheetContent></Sheet>
-    </AppLayout>
+    </>
   );
+  if (asTab) return inner;
+  return <AppLayout title="Driver Management">{inner}</AppLayout>;
 };
 
 export default DriversPage;

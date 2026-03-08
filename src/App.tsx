@@ -8,10 +8,10 @@ import { useAppStore } from "@/store/useAppStore";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import NotFound from "./pages/NotFound";
 
-const Login = lazy(() => import("./pages/Login"));
+const Login          = lazy(() => import("./pages/Login"));
 const AdminDashboard = lazy(() => import("./pages/admin/AdminDashboard"));
 const StudentDashboard = lazy(() => import("./pages/student/StudentDashboard"));
-const DriverDashboard = lazy(() => import("./pages/driver/DriverDashboard"));
+const DriverDashboard  = lazy(() => import("./pages/driver/DriverDashboard"));
 
 const queryClient = new QueryClient();
 
@@ -28,9 +28,10 @@ const AppRoutes = () => {
     <Routes>
       <Route path="/" element={isAuthenticated && user ? <Navigate to={`/${user.role}`} replace /> : <Navigate to="/login" replace />} />
       <Route path="/login" element={<Login />} />
-      <Route path="/admin/*" element={<ProtectedRoute allowedRoles={["admin"]}><AdminDashboard /></ProtectedRoute>} />
+      {/* Single route for admin — all navigation handled by tab system */}
+      <Route path="/admin" element={<ProtectedRoute allowedRoles={["admin"]}><AdminDashboard /></ProtectedRoute>} />
       <Route path="/student/*" element={<ProtectedRoute allowedRoles={["student"]}><StudentDashboard /></ProtectedRoute>} />
-      <Route path="/driver/*" element={<ProtectedRoute allowedRoles={["driver"]}><DriverDashboard /></ProtectedRoute>} />
+      <Route path="/driver/*"  element={<ProtectedRoute allowedRoles={["driver"]}><DriverDashboard /></ProtectedRoute>} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );
@@ -39,12 +40,9 @@ const AppRoutes = () => {
 const App = () => {
   const { isDark } = useAppStore();
 
-  // Sync dark class with store state — single source of truth
   useEffect(() => {
     document.documentElement.classList.toggle("dark", isDark);
   }, [isDark]);
-  // NOTE: Auth state is fully initialized by the store from localStorage at
-  // module load time (token / isAuthenticated). No duplicate effect needed.
 
   return (
     <QueryClientProvider client={queryClient}>

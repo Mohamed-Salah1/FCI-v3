@@ -12,7 +12,10 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { BusForm } from "@/components/forms/BusForm";
 import { toast } from "sonner";
 
-const BusesPage = () => {
+
+interface Props { asTab?: boolean }
+
+const BusesPage = ({ asTab }: Props) => {
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [editingBus, setEditingBus] = useState<Bus | null>(null);
   const [buses, setBuses] = useState<Bus[]>([
@@ -41,8 +44,8 @@ const BusesPage = () => {
     )},
   ];
 
-  return (
-    <AppLayout title="Fleet Management">
+  const inner = (
+    <>
       <div className="space-y-6">
         <div className="flex justify-between items-center">
           <h2 className="text-2xl font-bold flex items-center gap-2"><BusIcon className="h-6 w-6 text-primary" />Buses</h2>
@@ -54,8 +57,10 @@ const BusesPage = () => {
       </div>
       <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}><DialogContent className="max-w-2xl"><DialogHeader><DialogTitle>Add New Bus</DialogTitle></DialogHeader><BusForm onSubmit={(data) => { setBuses([{ ...data, id: `b${buses.length+1}` } as Bus, ...buses]); setIsAddOpen(false); toast.success("Bus added"); }} onCancel={() => setIsAddOpen(false)} /></DialogContent></Dialog>
       <Dialog open={!!editingBus} onOpenChange={(o) => !o && setEditingBus(null)}><DialogContent className="max-w-2xl"><DialogHeader><DialogTitle>Edit Bus</DialogTitle></DialogHeader>{editingBus && <BusForm initialData={editingBus} onSubmit={(data) => { setBuses(buses.map(b => b.id === editingBus.id ? { ...b, ...data } : b)); setEditingBus(null); toast.success("Updated"); }} onCancel={() => setEditingBus(null)} />}</DialogContent></Dialog>
-    </AppLayout>
+    </>
   );
+  if (asTab) return inner;
+  return <AppLayout title="Fleet Management">{inner}</AppLayout>;
 };
 
 export default BusesPage;

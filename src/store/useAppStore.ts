@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import type { User, BusLocation, Notification } from "@/types";
+import type { AdminTab } from "@/pages/admin/AdminDashboard";
 
 interface AppState {
   user: User | null;
@@ -18,10 +19,13 @@ interface AppState {
   unreadCount: () => number;
   sidebarOpen: boolean;
   setSidebarOpen: (open: boolean) => void;
+  // Admin tab system
+  _activeAdminTab: AdminTab;
+  navigateAdminTab: (tab: AdminTab) => void;
 }
 
 export const useAppStore = create<AppState>((set, get) => ({
-  user: null,
+  user: (() => { try { const u = localStorage.getItem("user"); return u ? JSON.parse(u) : null; } catch { return null; } })(),
   token: localStorage.getItem("token"),
   isAuthenticated: !!localStorage.getItem("token"),
   login: (user, token) => {
@@ -35,7 +39,6 @@ export const useAppStore = create<AppState>((set, get) => ({
     set({ user: null, token: null, isAuthenticated: false });
   },
   isDark: true,
-  // DOM sync is handled by a useEffect in App.tsx — store stays pure
   toggleTheme: () => set((state) => ({ isDark: !state.isDark })),
   busLocations: [],
   setBusLocations: (locations) => set({ busLocations: locations }),
@@ -57,4 +60,7 @@ export const useAppStore = create<AppState>((set, get) => ({
   unreadCount: () => get().notifications.filter((n) => !n.read).length,
   sidebarOpen: true,
   setSidebarOpen: (open) => set({ sidebarOpen: open }),
+  // Admin tab system — single source of truth, survives reload via Zustand store
+  _activeAdminTab: "dashboard",
+  navigateAdminTab: (tab) => set({ _activeAdminTab: tab }),
 }));

@@ -12,7 +12,10 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { RouteForm } from "@/components/forms/RouteForm";
 import { toast } from "sonner";
 
-const RoutesPage = () => {
+
+interface Props { asTab?: boolean }
+
+const RoutesPage = ({ asTab }: Props) => {
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [editingRoute, setEditingRoute] = useState<Route | null>(null);
   const [routes, setRoutes] = useState<Route[]>([
@@ -33,8 +36,8 @@ const RoutesPage = () => {
     )},
   ];
 
-  return (
-    <AppLayout title="Route Management">
+  const inner = (
+    <>
       <div className="space-y-6">
         <div className="flex justify-between items-center">
           <h2 className="text-2xl font-bold flex items-center gap-2"><MapIcon className="h-6 w-6 text-primary" />Routes</h2>
@@ -46,8 +49,10 @@ const RoutesPage = () => {
       </div>
       <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}><DialogContent className="max-w-2xl"><DialogHeader><DialogTitle>Create Route</DialogTitle></DialogHeader><RouteForm onSubmit={(data) => { setRoutes([{ ...data, id: `r${routes.length+1}`, stops: data.stops.map((s: any) => s.name) }, ...routes]); setIsAddOpen(false); toast.success("Created"); }} onCancel={() => setIsAddOpen(false)} /></DialogContent></Dialog>
       <Dialog open={!!editingRoute} onOpenChange={(o) => !o && setEditingRoute(null)}><DialogContent className="max-w-2xl"><DialogHeader><DialogTitle>Edit Route</DialogTitle></DialogHeader>{editingRoute && <RouteForm initialData={editingRoute} onSubmit={(data) => { setRoutes(routes.map(r => r.id === editingRoute.id ? { ...r, ...data, stops: data.stops.map((s: any) => s.name) } : r)); setEditingRoute(null); toast.success("Updated"); }} onCancel={() => setEditingRoute(null)} />}</DialogContent></Dialog>
-    </AppLayout>
+    </>
   );
+  if (asTab) return inner;
+  return <AppLayout title="Route Management">{inner}</AppLayout>;
 };
 
 export default RoutesPage;
