@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { DataTable } from "@/components/ui/data-table";
 import { ColumnDef } from "@tanstack/react-table";
-import { Driver } from "@/types/data";
+import { AdminDriver, mockAdminDrivers } from "@/utils/data";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { DriverForm } from "@/components/forms/DriverForm";
@@ -19,18 +19,14 @@ interface Props { asTab?: boolean }
 
 const DriversPage = ({ asTab }: Props) => {
   const [isAddOpen, setIsAddOpen] = useState(false);
-  const [editingDriver, setEditingDriver] = useState<Driver | null>(null);
-  const [viewingDriver, setViewingDriver] = useState<Driver | null>(null);
-  const [drivers, setDrivers] = useState<Driver[]>([
-    { id: "d1", name: "Ahmad Khaled", phone: "01012345678", licenseNumber: "DRV-987654", licenseExpiry: "2026-12-10", assignedBus: "SB-101", status: "active", availability: "on-duty", avatar: "https://i.pravatar.cc/150?img=12" },
-    { id: "d2", name: "Sara Mostafa", phone: "01098765432", licenseNumber: "DRV-123456", licenseExpiry: "2026-05-22", assignedBus: "SB-102", status: "active", availability: "available", avatar: "https://i.pravatar.cc/150?img=32" },
-    { id: "d3", name: "Omar Ramadan", phone: "01055667788", licenseNumber: "DRV-654321", licenseExpiry: "2025-11-15", assignedBus: "SB-103", status: "active", availability: "off-duty", avatar: "https://i.pravatar.cc/150?img=53" },
-  ]);
+  const [editingDriver, setEditingDriver] = useState<AdminDriver | null>(null);
+  const [viewingDriver, setViewingDriver] = useState<AdminDriver | null>(null);
+  const [drivers, setDrivers] = useState<AdminDriver[]>(mockAdminDrivers);
 
   const handleDelete = (id: string) => { setDrivers(drivers.filter(d => d.id !== id)); toast.success("Driver deleted"); };
   const toggleStatus = (id: string) => { setDrivers(drivers.map(d => d.id === id ? { ...d, status: d.status === "active" ? "inactive" : "active" } : d)); toast.success("Status updated"); };
 
-  const columns: ColumnDef<Driver>[] = [
+  const columns: ColumnDef<AdminDriver>[] = [
     { accessorKey: "name", header: "Driver", cell: ({ row }) => (
       <div className="flex items-center gap-3"><Avatar className="h-9 w-9"><AvatarImage src={row.original.avatar} /><AvatarFallback className="gradient-primary text-primary-foreground font-bold">{row.original.name.charAt(0)}</AvatarFallback></Avatar><div className="flex flex-col"><span className="font-medium">{row.original.name}</span><span className="text-[10px] text-muted-foreground">ID: {row.original.id}</span></div></div>
     )},

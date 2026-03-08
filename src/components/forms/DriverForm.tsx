@@ -25,7 +25,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
-import { Driver } from "@/types/data";
+import { AdminDriver } from "@/utils/data";
 
 const formSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),

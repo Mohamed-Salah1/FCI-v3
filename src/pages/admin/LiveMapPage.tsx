@@ -4,7 +4,7 @@ import { Bus, Search, AlertCircle, ChevronRight, Users, Zap } from "lucide-react
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { MOCK_BUSES, MOCK_STUDENTS } from "@/utils/mapData";
+import { MOCK_BUSES, MOCK_STUDENTS } from "@/utils/data";
 import BusDetailsModal from "@/components/ui/BusDetailsModal";
 import AdminMap from "@/components/map/AdminMap";
 import AppLayout from "@/components/layout/AppLayout";

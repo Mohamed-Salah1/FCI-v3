@@ -2,13 +2,13 @@ import { useEffect, useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Bus, MapPin, User, History, Sun, Moon, Home, Clock, Zap, Users, RefreshCw, ChevronRight } from "lucide-react";
 import { useAppStore } from "@/store/useAppStore";
-import { mockAttendance, mockNotifications, mockStudents } from "@/utils/mockData";
-import { MOCK_BUSES, interpolateRoute, calcDistance } from "@/utils/mapData";
+import { mockAttendance, mockNotifications, mockStudents } from "@/utils/data";
+import { MOCK_BUSES, interpolateRoute, calcDistance } from "@/utils/data";
 import StudentMap from "@/components/map/StudentMap";
 import NotificationPanel from "@/components/notifications/NotificationPanel";
 import { Badge } from "@/components/ui/badge";
 import wsService from "@/services/websocket";
-import type { BusLocation, Notification } from "@/types";
+import type { BusLocation, Notification } from "@/utils/data";
 import StudentHomeTab from "@/pages/student/StudentHomeTab";
 import StudentProfileTab from "@/pages/student/StudentProfileTab";
 

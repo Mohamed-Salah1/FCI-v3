@@ -3,8 +3,8 @@ import { Bus, Clock, MapPin, Users, Zap, Navigation, Activity, RefreshCw, Chevro
 import { useState, useEffect, useRef } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { MOCK_BUSES, interpolateRoute, calcDistance, splitRoute } from "@/utils/mapData";
-import type { StudentProfile } from "@/types";
+import { MOCK_BUSES, interpolateRoute, calcDistance, splitRoute } from "@/utils/data";
+import type { StudentProfile } from "@/utils/data";
 import type { StudentLocation } from "@/pages/student/StudentDashboard";
 
 interface Props {

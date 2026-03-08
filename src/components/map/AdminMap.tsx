@@ -9,7 +9,7 @@ import {
   fetchRoadRoute,
   interpolateRoute,
   splitRoute,
-} from "@/utils/mapData";
+} from "@/utils/data";
 
 // Fix Leaflet default icons
 delete (L.Icon.Default.prototype as any)._getIconUrl;

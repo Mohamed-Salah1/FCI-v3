@@ -2,7 +2,7 @@ import { Bell, AlertTriangle, CheckCircle, Info, XCircle, X } from "lucide-react
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import { useAppStore } from "@/store/useAppStore";
-import type { Notification } from "@/types";
+import type { Notification } from "@/utils/data";
 import { formatDistanceToNow } from "date-fns";
 
 const typeIcons = {

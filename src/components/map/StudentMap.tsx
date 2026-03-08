@@ -11,7 +11,7 @@ import {
   fetchRoadRoute,
   interpolateRoute,
   splitRoute,
-} from "@/utils/mapData";
+} from "@/utils/data";
 import type { StudentLocation } from "@/pages/student/StudentDashboard";
 
 // Fix Leaflet default icons once

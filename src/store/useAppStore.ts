@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import type { User, BusLocation, Notification } from "@/types";
+import type { User, BusLocation, Notification } from "@/utils/data";
 import type { AdminTab } from "@/pages/admin/AdminDashboard";
 
 interface AppState {

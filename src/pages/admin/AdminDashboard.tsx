@@ -7,9 +7,9 @@ import MapView from "@/components/map/MapView";
 import AttendanceTable from "@/components/dashboard/AttendanceTable";
 import AnalyticsCharts from "@/components/dashboard/AnalyticsCharts";
 import { useAppStore } from "@/store/useAppStore";
-import { mockBusLocations, mockAttendance, mockNotifications } from "@/utils/mockData";
+import { mockBusLocations, mockAttendance, mockNotifications } from "@/utils/data";
 import wsService from "@/services/websocket";
-import type { BusLocation, Notification } from "@/types";
+import type { BusLocation, Notification } from "@/utils/data";
 
 import LiveMapTab from "./LiveMapPage";
 import AttendanceTab from "./AttendancePage";

@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { DataTable } from "@/components/ui/data-table";
 import { ColumnDef } from "@tanstack/react-table";
-import { Bus } from "@/types/data";
+import { AdminBus, mockAdminBuses } from "@/utils/data";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { BusForm } from "@/components/forms/BusForm";
 import { toast } from "sonner";
@@ -17,17 +17,12 @@ interface Props { asTab?: boolean }
 
 const BusesPage = ({ asTab }: Props) => {
   const [isAddOpen, setIsAddOpen] = useState(false);
-  const [editingBus, setEditingBus] = useState<Bus | null>(null);
-  const [buses, setBuses] = useState<Bus[]>([
-    { id: "b1", busNumber: "SB-101", capacity: 35, plateNumber: "ABC-1234", assignedDriver: "Ahmad Khaled", route: "Route Alpha", status: "active" },
-    { id: "b2", busNumber: "SB-102", capacity: 30, plateNumber: "XYZ-5678", assignedDriver: "Sara Mostafa", route: "Route Beta", status: "active" },
-    { id: "b3", busNumber: "SB-103", capacity: 40, plateNumber: "LMN-9012", assignedDriver: "Omar Ramadan", route: "Route Gamma", status: "maintenance" },
-    { id: "b4", busNumber: "SB-104", capacity: 35, plateNumber: "QRS-3456", assignedDriver: "Lina H.", route: "Route Delta", status: "active" },
-  ]);
+  const [editingBus, setEditingBus] = useState<AdminBus | null>(null);
+  const [buses, setBuses] = useState<AdminBus[]>(mockAdminBuses);
 
   const handleDelete = (id: string) => { setBuses(buses.filter(b => b.id !== id)); toast.success("Bus removed"); };
 
-  const columns: ColumnDef<Bus>[] = [
+  const columns: ColumnDef<AdminBus>[] = [
     { accessorKey: "busNumber", header: "Bus Number", cell: ({ row }) => (
       <div className="flex items-center gap-3"><div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center text-primary"><BusIcon className="h-5 w-5" /></div><div className="flex flex-col"><span className="font-bold">{row.original.busNumber}</span><span className="text-[10px] text-muted-foreground font-mono">{row.original.plateNumber}</span></div></div>
     )},

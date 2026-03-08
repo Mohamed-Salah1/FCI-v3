@@ -1,7 +1,7 @@
 import { ReactNode, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAppStore } from "@/store/useAppStore";
-import type { UserRole } from "@/types";
+import type { UserRole } from "@/utils/data";
 
 interface ProtectedRouteProps {
   children: ReactNode;

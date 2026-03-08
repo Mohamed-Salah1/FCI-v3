@@ -20,7 +20,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Trash2, Plus, GripVertical } from "lucide-react";
-import { Route } from "@/types/data";
+import { AdminRoute } from "@/utils/data";
 
 const formSchema = z.object({
   name: z.string().min(1, "Route name is required"),

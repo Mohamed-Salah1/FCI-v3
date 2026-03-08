@@ -1,6 +1,6 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import type { AttendanceRecord } from "@/types";
+import type { AttendanceRecord } from "@/utils/data";
 
 interface AttendanceTableProps {
   records: AttendanceRecord[];

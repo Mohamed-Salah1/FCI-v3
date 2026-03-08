@@ -1,66 +1,131 @@
 import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Bus, Eye, EyeOff, ChevronRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
-import { Bus, Eye, EyeOff } from "lucide-react";
 import { useAppStore } from "@/store/useAppStore";
-import { mockDrivers, mockStudents } from "@/utils/mockData";
-import type { UserRole } from "@/types";
+import { authStore } from "@/utils/authStore";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import RegisterForm from "@/pages/Register";
 
-const Login = () => {
-  const [email, setEmail] = useState("");
+// ─── Login form ────────────────────────────────────────────────────────────────
+const LoginForm = ({ onSwitch }: { onSwitch: () => void }) => {
+  const [email, setEmail]       = useState("");
   const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
-  const { login } = useAppStore();
-  const navigate = useNavigate();
+  const [showPw, setShowPw]     = useState(false);
+  const [error, setError]       = useState("");
+  const [loading, setLoading]   = useState(false);
+  const { login }               = useAppStore();
+  const navigate                = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     setLoading(true);
-    await new Promise((r) => setTimeout(r, 800));
+    await new Promise((r) => setTimeout(r, 700));
 
-    // Check admin
-    if (email === "admin@bustrack.io" && password === "admin") {
-      login({ id: "user-admin", name: "Admin User", email, role: "admin" }, "demo-jwt-token-admin");
-      navigate("/admin");
-      setLoading(false);
-      return;
+    const found = authStore.authenticate(email, password);
+    if (found) {
+      login(
+        { id: found.id, name: found.name, email: found.email, role: found.role, avatar: found.avatar },
+        `mock-jwt-${found.role}-${found.id}`,
+      );
+      navigate(`/${found.role}`);
+    } else {
+      setError("Invalid email or password.");
     }
-
-    // Check drivers
-    const driver = mockDrivers.find((d) => d.email === email);
-    if (driver && password === "driver") {
-      login({ id: driver.id, name: driver.name, email: driver.email, role: "driver" }, "demo-jwt-token-driver");
-      navigate("/driver");
-      setLoading(false);
-      return;
-    }
-
-    // Check students
-    const student = mockStudents.find((s) => s.email === email);
-    if (student && password === "student") {
-      login({ id: student.id, name: student.name, email: student.email, role: "student" }, "demo-jwt-token-student");
-      navigate("/student");
-      setLoading(false);
-      return;
-    }
-
-    setError("Invalid credentials. Use driver@bustrack.io/driver, student@bustrack.io/student, or admin@bustrack.io/admin");
     setLoading(false);
   };
 
   return (
+    <motion.div
+      key="login"
+      initial={{ opacity: 0, x: -30 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: -30 }}
+      transition={{ duration: 0.28 }}
+    >
+      <div className="mb-6">
+        <h2 className="text-xl font-bold text-foreground">Welcome back</h2>
+        <p className="text-muted-foreground text-sm mt-1">Sign in to your account</p>
+      </div>
+
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="space-y-2">
+          <Label htmlFor="login-email">Email address</Label>
+          <Input id="login-email" type="email" placeholder="you@bustrack.io" value={email}
+            onChange={(e) => setEmail(e.target.value)} required className="bg-background/50" />
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="login-pw">Password</Label>
+          <div className="relative">
+            <Input id="login-pw" type={showPw ? "text" : "password"} placeholder="••••••••"
+              value={password} onChange={(e) => setPassword(e.target.value)} required
+              className="bg-background/50 pr-10" />
+            <button type="button" onClick={() => setShowPw(!showPw)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors">
+              {showPw ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+            </button>
+          </div>
+        </div>
+
+        <AnimatePresence>
+          {error && (
+            <motion.p initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
+              className="text-sm text-destructive bg-destructive/10 px-3 py-2 rounded-lg">
+              {error}
+            </motion.p>
+          )}
+        </AnimatePresence>
+
+        <Button type="submit" className="w-full h-11 font-semibold" disabled={loading}>
+          {loading
+            ? <span className="flex items-center gap-2"><span className="h-4 w-4 rounded-full border-2 border-primary-foreground border-t-transparent animate-spin" />Signing in…</span>
+            : <span className="flex items-center gap-2">Sign In <ChevronRight className="h-4 w-4" /></span>}
+        </Button>
+      </form>
+
+      {/* Demo quick-fill */}
+      <div className="mt-5 pt-4 border-t border-border/40">
+        <p className="text-xs text-muted-foreground text-center mb-3 font-medium">Quick demo access</p>
+        <div className="grid grid-cols-3 gap-2">
+          {[
+            { label: "Admin",   email: "admin@bustrack.io",   pw: "Admin@2026"   },
+            { label: "Driver",  email: "driver@bustrack.io",  pw: "Driver@2026"  },
+            { label: "Student", email: "student@bustrack.io", pw: "Student@2026" },
+          ].map(({ label, email: e, pw }) => (
+            <button key={label} type="button"
+              onClick={() => { setEmail(e); setPassword(pw); setError(""); }}
+              className="text-xs px-2 py-2 rounded-lg border border-border/50 bg-secondary/30 hover:bg-secondary/60 transition-colors text-muted-foreground hover:text-foreground">
+              {label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <p className="text-center text-sm text-muted-foreground mt-5">
+        Don't have an account?{" "}
+        <button onClick={onSwitch} className="text-primary font-medium hover:underline">Register</button>
+      </p>
+    </motion.div>
+  );
+};
+
+// ─── Page shell ────────────────────────────────────────────────────────────────
+const Login = () => {
+  const [mode, setMode] = useState<"login" | "register">("login");
+
+  return (
     <div className="min-h-screen flex items-center justify-center p-4 gradient-dark">
-      <div className="absolute inset-0 overflow-hidden">
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
         <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-primary/3 rounded-full blur-3xl" />
       </div>
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-md relative">
+
+      <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-md relative">
+        {/* Brand */}
         <div className="text-center mb-8">
           <div className="inline-flex h-14 w-14 rounded-2xl gradient-primary items-center justify-center mb-4 glow-primary">
             <Bus className="h-7 w-7 text-primary-foreground" />
@@ -68,32 +133,17 @@ const Login = () => {
           <h1 className="text-2xl font-bold text-foreground">BusTrack Pro</h1>
           <p className="text-muted-foreground text-sm mt-1">Smart School Bus Tracking System</p>
         </div>
-        <div className="glass-card-strong rounded-2xl p-6">
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input id="email" type="email" placeholder="Enter your email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
-              <div className="relative">
-                <Input id="password" type={showPassword ? "text" : "password"} placeholder="Enter password" value={password} onChange={(e) => setPassword(e.target.value)} required />
-                <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">
-                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                </button>
-              </div>
-            </div>
-            {error && <p className="text-sm text-destructive">{error}</p>}
-            <Button type="submit" className="w-full" disabled={loading}>{loading ? "Signing in..." : "Sign In"}</Button>
-          </form>
-          <div className="mt-6 pt-4 border-t border-border/50">
-            <p className="text-xs text-muted-foreground text-center mb-2">Demo Credentials</p>
-            <div className="text-xs text-muted-foreground space-y-1">
-              <p>🔑 Admin: admin@bustrack.io / admin</p>
-              <p>🚌 Driver: driver@bustrack.io / driver</p>
-              <p>🎓 Student: student@bustrack.io / student</p>
-            </div>
-          </div>
+
+        <div className="glass-card-strong rounded-2xl p-6 overflow-hidden">
+          <AnimatePresence mode="wait">
+            {mode === "login"
+              ? <LoginForm key="login" onSwitch={() => setMode("register")} />
+              : (
+                <motion.div key="register" initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 30 }} transition={{ duration: 0.28 }}>
+                  <RegisterForm onSwitchToLogin={() => setMode("login")} />
+                </motion.div>
+              )}
+          </AnimatePresence>
         </div>
       </motion.div>
     </div>

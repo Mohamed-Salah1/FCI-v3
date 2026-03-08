@@ -20,7 +20,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { Student } from "@/types/data";
+import { AdminStudent } from "@/utils/data";
 
 const formSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),

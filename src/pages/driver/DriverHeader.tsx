@@ -1,7 +1,7 @@
 import { Bus, Sun, Moon } from "lucide-react";
 import { useAppStore } from "@/store/useAppStore";
 import NotificationPanel from "@/components/notifications/NotificationPanel";
-import type { DriverProfile } from "@/types";
+import type { DriverProfile } from "@/utils/data";
 
 const DriverHeader = ({ profile }: { profile: DriverProfile }) => {
   const { logout, toggleTheme, isDark } = useAppStore();

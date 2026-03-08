@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
-import type { DriverProfile } from "@/types";
+import type { DriverProfile } from "@/utils/data";
 
 const DriverProfileTab = ({ profile }: { profile: DriverProfile }) => {
   const { toast } = useToast();

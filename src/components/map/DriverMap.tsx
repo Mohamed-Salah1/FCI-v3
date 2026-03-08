@@ -2,7 +2,7 @@ import { MapContainer, TileLayer, Marker, Popup, Polyline, useMap } from "react-
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { useEffect, useRef, useState } from "react";
-import { MOCK_BUSES, MOCK_STUDENTS, UNIVERSITY, fetchRoadRoute, interpolateRoute, splitRoute } from "@/utils/mapData";
+import { MOCK_BUSES, MOCK_STUDENTS, UNIVERSITY, fetchRoadRoute, interpolateRoute, splitRoute } from "@/utils/data";
 
 // Fix Leaflet default marker icons
 delete (L.Icon.Default.prototype as any)._getIconUrl;

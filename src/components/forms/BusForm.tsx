@@ -19,7 +19,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Bus } from "@/types/data";
+import { AdminBus } from "@/utils/data";
 
 const formSchema = z.object({
   busNumber: z.string().min(1, "Bus number is required"),

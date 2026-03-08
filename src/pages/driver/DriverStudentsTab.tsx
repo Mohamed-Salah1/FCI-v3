@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
-import type { StudentPickup } from "@/types";
+import type { StudentPickup } from "@/utils/data";
 
 interface Props {
   pickups: StudentPickup[];

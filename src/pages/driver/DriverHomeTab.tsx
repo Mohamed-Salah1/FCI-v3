@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { CheckCircle, Clock, Users, MapPin, Navigation, Wifi, ShieldCheck, Activity } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { mockRouteStops } from "@/utils/mockData";
+import { mockRouteStops } from "@/utils/data";
 
 interface Props {
   tripStatus: string;

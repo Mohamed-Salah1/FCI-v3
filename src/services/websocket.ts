@@ -1,4 +1,4 @@
-import type { BusLocation, Notification } from "@/types";
+import type { BusLocation, Notification } from "@/utils/data";
 
 type MessageHandler = (data: BusLocation | Notification) => void;
 

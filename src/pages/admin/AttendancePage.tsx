@@ -1,6 +1,6 @@
 import AppLayout from "@/components/layout/AppLayout";
 import AttendanceTable from "@/components/dashboard/AttendanceTable";
-import { mockAttendance } from "@/utils/mockData";
+import { mockAttendance } from "@/utils/data";
 import { motion } from "framer-motion";
 import { Search, Filter, Download } from "lucide-react";
 import { Input } from "@/components/ui/input";
