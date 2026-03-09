@@ -13,11 +13,11 @@ const AppLayout = ({ children, title }: AppLayoutProps) => {
   const { isDark, toggleTheme, user } = useAppStore();
 
   return (
-    <div className="flex min-h-screen w-full">
+    <div className="flex h-screen w-full overflow-hidden">
       <AppSidebar />
-      <div className="flex-1 flex flex-col min-w-0">
+      <div className="flex-1 flex flex-col min-w-0 h-full overflow-hidden">
         {/* Top Bar */}
-        <header className="h-14 border-b border-border/50 glass-card-strong flex items-center justify-between px-4 sticky top-0 z-20">
+        <header className="h-14 shrink-0 border-b border-border/50 glass-card-strong flex items-center justify-between px-4 z-20">
           <div className="flex items-center gap-3">
             {title && <h1 className="text-lg font-semibold">{title}</h1>}
           </div>
@@ -36,8 +36,8 @@ const AppLayout = ({ children, title }: AppLayoutProps) => {
             </div>
           </div>
         </header>
-        {/* Content */}
-        <main className="flex-1 p-4 md:p-6">
+        {/* Content — scrolls independently, sidebar stays fixed */}
+        <main className="flex-1 p-4 md:p-6 overflow-y-auto overflow-x-hidden">
           {children}
         </main>
       </div>

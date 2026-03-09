@@ -31,7 +31,7 @@ const AppSidebar = () => {
     <motion.aside
       animate={{ width: sidebarOpen ? 240 : 64 }}
       transition={{ duration: 0.2 }}
-      className="h-screen sticky top-0 glass-card-strong border-r border-border/50 flex flex-col z-30 shrink-0"
+      className="h-full sticky top-0 glass-card-strong border-r border-border/50 flex flex-col z-30 shrink-0"
     >
       {/* Header */}
       <div className="flex items-center gap-3 p-4 border-b border-border/50">
@@ -99,7 +99,7 @@ const AppSidebar = () => {
       {/* Toggle */}
       <button
         onClick={() => setSidebarOpen(!sidebarOpen)}
-        className="absolute -right-3 top-20 h-6 w-6 rounded-full bg-card border border-border flex items-center justify-center hover:bg-secondary transition-colors"
+        className="absolute -right-3 top-20 h-6 w-6 rounded-full bg-card border border-border flex items-center justify-center hover:bg-secondary transition-colors z-50"
       >
         {sidebarOpen ? <ChevronLeft className="h-3 w-3" /> : <ChevronRight className="h-3 w-3" />}
       </button>

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Zap, Users } from "lucide-react";
 import { MOCK_STUDENTS, type MapStudent, mockStudents, mockAttendance, getStudentProfile } from "@/utils/data";
 import StudentProfileSheet, { type StudentSheetData } from "@/pages/admin/StudentProfileSheet";
@@ -53,6 +53,9 @@ const BusDetailsModal = ({ bus, onClose }: BusDetailsModalProps) => {
               <div className="w-3 h-3 rounded-full" style={{ background: bus.colorHex }} />
               {bus.number} — {bus.driverName}
             </DialogTitle>
+            <DialogDescription>
+              Bus details, assigned students, and live status.
+            </DialogDescription>
           </DialogHeader>
 
           {/* Bus stats */}

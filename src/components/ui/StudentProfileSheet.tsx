@@ -3,7 +3,7 @@
 // Accepts either a full `Student` (admin table) or a `MockStudent` (map/modal).
 // Both shapes are unified via the `StudentSheetData` interface below.
 
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -41,6 +41,9 @@ const StudentProfileSheet = ({ student, open, onClose, onEdit }: Props) => (
     <SheetContent className="sm:max-w-md overflow-y-auto">
       <SheetHeader>
         <SheetTitle>Student Profile</SheetTitle>
+        <SheetDescription>
+          View student details, contact info, and attendance history.
+        </SheetDescription>
       </SheetHeader>
 
       {student && (
